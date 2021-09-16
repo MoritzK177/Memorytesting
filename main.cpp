@@ -389,7 +389,8 @@ void test(int mask_number, int function_number)
         std::chrono::duration<double> elapsed_seconds = endTime - startTime;
 
         std::cout<<elapsed_seconds.count()<<std::endl<<std::endl;
-
+        delete[] mask_array;
+        delete[] speed_array;
         //print result to output
        /* myfile<<"Result information\n";
         for ( int i =0; i< settings::total_grid_size;++i)
