@@ -270,49 +270,84 @@ void fast_marching(MinHeap &h, bool  accepted_array[settings::total_grid_size], 
     //}
 }
 
-bool in_barrier(int x, int y, int z)
+bool in_barrier( const int x,const int y,const int z)
 {
-    double temp_x= x*settings::h - 0.5;
-    double temp_y= y*settings::h - 0.5;
-    double temp_z= z*settings::h - 0.5;
+    const double temp_x= x*settings::h - 0.5;
+    const double temp_y= y*settings::h - 0.5;
+    const double temp_z= z*settings::h - 0.5;
 
-    double w = 1.0/24;
-    double big_r = std::sqrt(std::pow(temp_x,2)+ std::pow(temp_y,2)+ std::pow(temp_z,2));
-    double small_r = std::sqrt(std::pow(temp_x,2)+ std::pow(temp_y,2));
-    bool in_barrier_one = (0.15 < big_r && big_r< 0.15+w) && !(small_r<0.05 && temp_z<0);
-    bool in_barrier_two = (0.25 < big_r && big_r< 0.25+w) && !(small_r<0.1 && temp_z>0);
-    bool in_barrier_three = (0.35 < big_r && big_r< 0.35+w) && !(small_r<0.10 && temp_z<0);
-    bool in_barrier_four = (0.45 < big_r && big_r< 0.45+w) && !(small_r<0.1 && temp_z>0);
+    const double w = 1.0/24;
+    const double big_r = std::sqrt(std::pow(temp_x,2)+ std::pow(temp_y,2)+ std::pow(temp_z,2));
+    const double small_r = std::sqrt(std::pow(temp_x,2)+ std::pow(temp_y,2));
+    const bool in_barrier_one = (0.15 < big_r && big_r< 0.15+w) && !(small_r<0.05 && temp_z<0);
+    const bool in_barrier_two = (0.25 < big_r && big_r< 0.25+w) && !(small_r<0.1 && temp_z>0);
+    const bool in_barrier_three = (0.35 < big_r && big_r< 0.35+w) && !(small_r<0.10 && temp_z<0);
+    const bool in_barrier_four = (0.45 < big_r && big_r< 0.45+w) && !(small_r<0.1 && temp_z>0);
     return in_barrier_one||in_barrier_two||in_barrier_four||in_barrier_three;
 }
 //speed and mask functions
-double speed_funct(int x, int y, int z)
+double speed_funct(const int number, const int x,const int y,const int z)
 {
-    return 1+ 0.5*std::sin(20*M_PI*settings::h*x)*std::sin(20*M_PI*settings::h*y)*std::sin(20*M_PI*settings::h*z);
-    //return (1- 0.99*std::sin(2*M_PI*settings::h*x)*std::sin(2*M_PI*settings::h*y)*std::sin(2*M_PI*settings::h*z));
-    //return (pow(std::sin(x),2)+pow(std::cos(y),2)+0.1);
-    //return 1.0;
-    //if(in_barrier(x,y,z)) return 0;
-    //else return 1;
+    switch (number) {
+        case 1 :    return 1.0;
+        case 2 :    return 1+ 0.5*std::sin(20*M_PI*settings::h*x)*std::sin(20*M_PI*settings::h*y)*std::sin(20*M_PI*settings::h*z);
+        case 3 :    return (1- 0.99*std::sin(2*M_PI*settings::h*x)*std::sin(2*M_PI*settings::h*y)*std::sin(2*M_PI*settings::h*z));
+        case 4 :    return 1*(pow(std::sin(x*settings::h),2)+pow(std::cos(y*settings::h),2)+0.1);
+        case 5 :    if(in_barrier(x,y,z)) return 0;
+            else return 1;
+
+        default :   std::cout<<"UNDEFINED FUNCTION; RETURNING ZERO !"<<std::endl;
+            return 0;
+    }
 }
-bool in_mask(int x, int y , int z)
+bool in_mask(const int number,const int x,const int y ,const int z)
 {
+    switch (number) {
+        case 1 :    return (pow(x*settings::h -0.5,2)+ pow(y*settings::h -0.5,2)+pow(z*settings::h -0.5,2))<=1.0/16;
+        case 2 :    return x==0&&y==0&&z==0;
+        case 3 :    return (pow(x*settings::h -0.25,2)+ pow(y*settings::h -0.25,2)+pow(z*settings::h -0.25,2))<=1.0/256||x*settings::h<=0.875&&x*settings::h >=0.625&& y*settings::h<=0.875&&y*settings::h >=0.625&& z*settings::h<=0.875&&z*settings::h >=0.625;
+        case 4 :    return x== settings::x_grid_size/2&&y== settings::y_grid_size/2&&z== settings::z_grid_size/2;
+        default :   std::cout<<"UNDEFINED MASK; RETURNING FALSE !"<<std::endl;
+            return false;
+    }
     //cube=[15,24]^3
     //bool x_cor = x<=24 && x>= 15;
     //bool y_cor = y<=24 && y>= 15;
     //bool z_cor = z<=24 && z>= 15;
     //return x_cor && y_cor && z_cor;
-    //return x==0&&y==0&&z==0;
-    //bool in_ball= (pow(x*settings::h -0.25,2)+ pow(y*settings::h -0.25,2)+pow(z*settings::h -0.25,2))<=1.0/256;
-    //bool in_cube = x*settings::h<=0.875&&x*settings::h >=0.625&& y*settings::h<=0.875&&y*settings::h >=0.625&& z*settings::h<=0.875&&z*settings::h >=0.625;
-    //return in_ball ||in_cube;
-    return x== settings::x_grid_size/2&&y== settings::y_grid_size/2&&z== settings::z_grid_size/2;
-    //bool in_ball2= (pow(x*settings::h -0.5,2)+ pow(y*settings::h -0.5,2)+pow(z*settings::h -0.5,2))<=1.0/16;
-    //return in_ball2;
-    //bool in_cube2 = (x==63 ||x==64)&&(y==63 ||y==64)&&(z==63||z==64);
-    //return in_cube2;
 }
-int main()
+void id(const int function_number, const int mask_number)
+{
+    std::cout<<"The function f(x,y,z) = ";
+    switch (function_number) {
+        case 1 :    std::cout<< "1.0" <<std::endl;
+            break;
+        case 2 :    std::cout<< "1+ 0.5*std::sin(20*PI*h*x)*std::sin(20*PI*h*y)*std::sin(20*PI*h*z)" <<std::endl;
+            break;
+        case 3 :    std::cout<< "(1- 0.99*std::sin(2*PI*h*x)*std::sin(2*PI*h*y)*std::sin(2*PI*h*z))" <<std::endl;
+            break;
+        case 4 :    std::cout<< "0.001*(pow(std::sin(x*h),2)+pow(std::cos(y*h),2)+0.1)"<<std::endl;
+            break;
+        case 5 :    std::cout<< "Spheric barriers, speed in barriers 0, else 1"<<std::endl;
+            break;
+        default :   std::cout<<"UNDEFINED FUNCTION!"<<std::endl;
+            break;
+    }
+    std::cout<<"The mask: ";
+    switch (mask_number) {
+        case 1 :    std::cout<< "Ball in the center, radius 1/4" <<std::endl;
+            break;
+        case 2 :    std::cout<< "Origin" <<std::endl;
+            break;
+        case 3 :    std::cout<< "Ball at 0.25/0.25/0.25, radius 1/16 and Cube at 0.75/0.75/0.75 with diameter 1/8" <<std::endl;
+            break;
+        case 4 :    std::cout<< "Point in the middle" <<std::endl;
+            break;
+        default :   std::cout<<"UNDEFINED MASK!"<<std::endl;
+            break;
+    }
+}
+void test(int mask_number, int function_number)
 {
     //test with speed 1 and start in a ball in center of the mesh, should return distance from origin
     try {
@@ -327,8 +362,8 @@ int main()
         for(short x=0; x<settings::x_grid_size; ++x){
             for(short y=0; y<settings::y_grid_size; ++y){
                 for(short z=0; z<settings::z_grid_size; ++z){
-                    mask_array[arr_index(x,y,z)]= in_mask(x,y,z);
-                    speed_array[arr_index(x,y,z)]= speed_funct(x,y,z);
+                    mask_array[arr_index(x,y,z)]= in_mask(mask_number,x,y,z);
+                    speed_array[arr_index(x,y,z)]= speed_funct(function_number,x,y,z);
                     //if (mask_array[arr_index(x,y,z)]== in_mask(x,y,z)) {
                     //    ++counter_1;
                     //}
@@ -347,13 +382,13 @@ int main()
         {
             myfile << mask_array[i]<<"\n";
         }*/
-
+        std::cout<<"Size of Input:"<< (sizeof(bool[settings::total_grid_size])+sizeof(double[settings::total_grid_size]))/1000000.0<<" mb"<<std::endl;
         initialize(h, mask_array , std::ref(speed_array), accepted_counter);
         fast_marching(h,mask_array, std::ref(speed_array), accepted_counter);
         auto endTime = std::chrono::system_clock::now();
         std::chrono::duration<double> elapsed_seconds = endTime - startTime;
-        std::cout<<"Size of Input:"<< (sizeof(bool[settings::total_grid_size])+sizeof(double[settings::total_grid_size]))/1000000.0<<" mb"<<std::endl;
-        std::cout<<elapsed_seconds.count()<<std::endl;
+
+        std::cout<<elapsed_seconds.count()<<std::endl<<std::endl;
 
         //print result to output
        /* myfile<<"Result information\n";
@@ -371,7 +406,7 @@ int main()
     {
         std::cerr << "Error: " << exception << '\n';
     }
-    return 0;
+    //return 0;
     /* //test with speed 1 and start in (0,0,0), should return distance from origin
      try {
          std::cout<<sizeof(WeightedPoint)<<"\n";
@@ -420,5 +455,17 @@ int main()
      }
      return 0;
      */
+}
+int main(){
+    int num_iter = 5;
+    std::vector<int> test_cases {1, 1, 2, 4, 3, 4, 1, 2, 4, 3};
+    for (int i = 0; i < test_cases.size(); i += 2) {
+        int function_number{test_cases[i]};
+        int mask_number{test_cases[i + 1]};
+        std::cout<<"Now running: "<<std::endl;
+        id(function_number, mask_number);
+        std::cout<<"On a "<< settings::x_grid_size <<" x "<< settings::y_grid_size <<" x "<< settings::z_grid_size <<" Grid "<<std::endl;
+        test(mask_number,function_number);
+    }
 }
 
