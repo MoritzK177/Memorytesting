@@ -5,10 +5,10 @@
 #ifndef FASTMARCHING_SETTINGS_H
 #define FASTMARCHING_SETTINGS_H
 namespace settings{
-    constexpr short x_global_grid_size {glob_gs_ph};
-    constexpr short y_global_grid_size {glob_gs_ph};
-    constexpr short z_global_grid_size {glob_gs_ph};
-    constexpr int total_global_grid_size {x_global_grid_size*y_global_grid_size*z_global_grid_size};
+    constexpr short x_grid_size {glob_gs_ph};
+    constexpr short y_grid_size {glob_gs_ph};
+    constexpr short z_grid_size {glob_gs_ph};
+    constexpr int total_grid_size {x_grid_size*y_grid_size*z_grid_size};
     constexpr double h{1.0/(glob_gs_ph-1)};
 }
 #endif //FASTMARCHING_SETTINGS_H
