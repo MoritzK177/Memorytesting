@@ -351,7 +351,6 @@ void test(int mask_number, int function_number)
 {
     //test with speed 1 and start in a ball in center of the mesh, should return distance from origin
     try {
-        int counter_1=0;
         //initialize all arrays
         //total size needed for heap for the lookup table
 
@@ -388,7 +387,10 @@ void test(int mask_number, int function_number)
         auto endTime = std::chrono::system_clock::now();
         std::chrono::duration<double> elapsed_seconds = endTime - startTime;
 
+        std::string dummy;
         std::cout<<elapsed_seconds.count()<<std::endl<<std::endl;
+        std::cout << "Enter to continue..." << std::endl;
+        std::getline(std::cin, dummy);
         delete[] mask_array;
         delete[] speed_array;
         //print result to output
