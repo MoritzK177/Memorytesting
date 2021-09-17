@@ -384,13 +384,12 @@ void test(int mask_number, int function_number)
         std::cout<<"Size of Input:"<< (sizeof(bool[settings::total_grid_size])+sizeof(double[settings::total_grid_size]))/1000000.0<<" mb"<<std::endl;
         initialize(h, mask_array , std::ref(speed_array), accepted_counter);
         fast_marching(h,mask_array, std::ref(speed_array), accepted_counter);
-        auto endTime = std::chrono::system_clock::now();
-        std::chrono::duration<double> elapsed_seconds = endTime - startTime;
-
         std::string dummy;
         std::cout<<elapsed_seconds.count()<<std::endl<<std::endl;
         std::cout << "Enter to continue..." << std::endl;
         std::getline(std::cin, dummy);
+        auto endTime = std::chrono::system_clock::now();
+        std::chrono::duration<double> elapsed_seconds = endTime - startTime;
         delete[] mask_array;
         delete[] speed_array;
         //print result to output
