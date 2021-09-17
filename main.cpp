@@ -385,7 +385,6 @@ void test(int mask_number, int function_number)
         initialize(h, mask_array , std::ref(speed_array), accepted_counter);
         fast_marching(h,mask_array, std::ref(speed_array), accepted_counter);
         std::string dummy;
-        std::cout<<elapsed_seconds.count()<<std::endl<<std::endl;
         std::cout << "Enter to continue..." << std::endl;
         std::getline(std::cin, dummy);
         auto endTime = std::chrono::system_clock::now();
