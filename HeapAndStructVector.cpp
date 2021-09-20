@@ -32,6 +32,7 @@ MinHeap::MinHeap(const int cap)
 MinHeap::~MinHeap()
 {
     delete[] table;
+    std::vector<WeightedPoint>().swap(harr);
 }
 
 //returns the index of element (x,y,z)

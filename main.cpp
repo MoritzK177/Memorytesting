@@ -12,7 +12,7 @@
 #include <fstream>
 #include <chrono>
 #include <functional>
-
+#include "numeric"
 //Helper function to return the respective array index
 int arr_index(const short x, const short y, const short z)
 {
@@ -294,8 +294,8 @@ double speed_funct(const int number, const int x,const int y,const int z)
         case 3 :    return (1- 0.99*std::sin(2*M_PI*settings::h*x)*std::sin(2*M_PI*settings::h*y)*std::sin(2*M_PI*settings::h*z));
         case 4 :    return 1*(pow(std::sin(x*settings::h),2)+pow(std::cos(y*settings::h),2)+0.1);
         case 5 :    if(in_barrier(x,y,z)) return 0;
-            else return 1;
-
+                    else return 1;
+        case 6 :    return 0.001*(pow(std::sin(x*settings::h),2)+pow(std::cos(y*settings::h),2)+0.1);
         default :   std::cout<<"UNDEFINED FUNCTION; RETURNING ZERO !"<<std::endl;
             return 0;
     }
@@ -347,7 +347,7 @@ void id(const int function_number, const int mask_number)
             break;
     }
 }
-void test(int mask_number, int function_number)
+double test(int mask_number, int function_number)
 {
     //test with speed 1 and start in a ball in center of the mesh, should return distance from origin
     try {
@@ -381,14 +381,16 @@ void test(int mask_number, int function_number)
         {
             myfile << mask_array[i]<<"\n";
         }*/
-        std::cout<<"Size of Input:"<< (sizeof(bool[settings::total_grid_size])+sizeof(double[settings::total_grid_size]))/1000000.0<<" mb"<<std::endl;
+        //std::cout<<"Size of Input:"<< (sizeof(bool[settings::total_grid_size])+sizeof(double[settings::total_grid_size]))/1024.0<<" kb"<<std::endl;
         initialize(h, mask_array , std::ref(speed_array), accepted_counter);
         fast_marching(h,mask_array, std::ref(speed_array), accepted_counter);
-        std::string dummy;
-        std::cout << "Enter to continue..." << std::endl;
-        std::getline(std::cin, dummy);
         auto endTime = std::chrono::system_clock::now();
         std::chrono::duration<double> elapsed_seconds = endTime - startTime;
+
+        //std::string dummy;
+        //std::cout<<elapsed_seconds.count()<<std::endl<<std::endl;
+        //std::cout << "Enter to continue..." << std::endl;
+        //std::getline(std::cin, dummy);
         delete[] mask_array;
         delete[] speed_array;
         //print result to output
@@ -399,6 +401,7 @@ void test(int mask_number, int function_number)
             //std::cout<<speed_array[i]<<std::endl;
         }
         myfile.close();*/
+       return elapsed_seconds.count();
 
     }
 
@@ -459,14 +462,21 @@ void test(int mask_number, int function_number)
 }
 int main(){
     int num_iter = 5;
-    std::vector<int> test_cases {1, 1, 2, 4, 3, 4, 1, 2, 4, 3};
+    std::vector<int> test_cases {1,1, 2, 4, 3, 4, 1, 2, 4, 3,6,3};
     for (int i = 0; i < test_cases.size(); i += 2) {
         int function_number{test_cases[i]};
         int mask_number{test_cases[i + 1]};
         std::cout<<"Now running: "<<std::endl;
         id(function_number, mask_number);
         std::cout<<"On a "<< settings::x_grid_size <<" x "<< settings::y_grid_size <<" x "<< settings::z_grid_size <<" Grid "<<std::endl;
-        test(mask_number,function_number);
+        std::vector<double> res_vector;
+        for (int j = 0; j < num_iter; ++j) {
+            res_vector.push_back(test(mask_number, function_number));
+        }
+        std::cout<<"Lowest runtime: "<<*std::min_element(res_vector.begin(),res_vector.end())<<std::endl;
+        std::cout<<"Highest runtime: "<<*std::max_element(res_vector.begin(),res_vector.end())<<std::endl;
+        std::cout<<"Average runtime of "<<num_iter<< " iterations: "<< std::accumulate(res_vector.begin(),res_vector.end(),0.0)/static_cast<double>(num_iter)<<std::endl<<std::endl;
+
     }
 }
 
