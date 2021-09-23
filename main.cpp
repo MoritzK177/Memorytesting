@@ -71,7 +71,7 @@ double solve(double speed_array[settings::total_grid_size],bool const accepted_a
     assert(!accepted_array[arr_index(x,y,z)]);
     //If the speed is zero(outside of original domain) we should instantly return infinity
     if(speed == 0){
-        std::cout<<"ABSDHABD"<<std::endl;
+        //std::cout<<"ABSDHABD"<<std::endl;
         return temp_res;
     }
     double min_res_array[3];
@@ -374,7 +374,7 @@ double test(int mask_number, int function_number)
 
         //initialize output
         /*std::ofstream myfile;
-        myfile.open("distance_cube_point_1.txt");
+        myfile.open("test_barriers.txt");
         myfile << "Dimension information\n"<<settings::x_grid_size <<"\n"<<settings::y_grid_size<<"\n"<<settings::z_grid_size<<"\n";
         myfile << "Mask information\n";
         for ( int i =0; i< settings::total_grid_size;++i)
@@ -391,16 +391,17 @@ double test(int mask_number, int function_number)
         //std::cout<<elapsed_seconds.count()<<std::endl<<std::endl;
         //std::cout << "Enter to continue..." << std::endl;
         //std::getline(std::cin, dummy);
-        delete[] mask_array;
-        delete[] speed_array;
+
         //print result to output
-       /* myfile<<"Result information\n";
+        /*myfile<<"Result information\n";
         for ( int i =0; i< settings::total_grid_size;++i)
         {
             myfile << speed_array[i]<<"\n";
             //std::cout<<speed_array[i]<<std::endl;
         }
         myfile.close();*/
+        delete[] mask_array;
+        delete[] speed_array;
        return elapsed_seconds.count();
 
     }
@@ -462,7 +463,8 @@ double test(int mask_number, int function_number)
 }
 int main(){
     int num_iter = 5;
-    std::vector<int> test_cases {1,1, 2, 4, 3, 4, 1, 2, 4, 3,6,3};
+    //std::vector<int> test_cases {1,1, 2, 4, 3, 4, 1, 2, 4, 3,6,3};
+    std::vector<int> test_cases {5,4};
     for (int i = 0; i < test_cases.size(); i += 2) {
         int function_number{test_cases[i]};
         int mask_number{test_cases[i + 1]};
