@@ -387,10 +387,10 @@ double test(int mask_number, int function_number)
         auto endTime = std::chrono::system_clock::now();
         std::chrono::duration<double> elapsed_seconds = endTime - startTime;
 
-        //std::string dummy;
-        //std::cout<<elapsed_seconds.count()<<std::endl<<std::endl;
-        //std::cout << "Enter to continue..." << std::endl;
-        //std::getline(std::cin, dummy);
+        std::string dummy;
+        std::cout<<elapsed_seconds.count()<<std::endl<<std::endl;
+        std::cout << "Enter to continue..." << std::endl;
+        std::getline(std::cin, dummy);
 
         //print result to output
         /*myfile<<"Result information\n";
@@ -462,7 +462,7 @@ double test(int mask_number, int function_number)
      */
 }
 int main(){
-    int num_iter = 5;
+    int num_iter = 1;
     //std::vector<int> test_cases {1,1, 2, 4, 3, 4, 1, 2, 4, 3,6,3};
     std::vector<int> test_cases {5,4};
     for (int i = 0; i < test_cases.size(); i += 2) {
